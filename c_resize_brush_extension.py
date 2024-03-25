@@ -10,8 +10,6 @@ class CustomBrushResizeExtension(Extension):
         pass
 
     def createActions(self, window):
-        global resize_icon
-
         self.c_brush_resize = window.createAction(
             "c_brush_resize",
             "Custom Brush resize",
