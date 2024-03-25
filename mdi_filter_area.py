@@ -83,7 +83,7 @@ def get_start_x():
     return int(cursor_press_position.x() - abs(offset_distance))
 
 
-def get_brush_size(position):
+def get_brush_size():
     global cursor_press_position
     global current_brush_size
     global max_brush_size
@@ -96,7 +96,7 @@ def get_brush_size(position):
 
     # remap the current mouse position to a brush size
     new_size = translate(
-        position.x(),
+        QtGui.QCursor.pos().x(),
         start_x_pos,
         end_x_pos,
         min_brush_size,
@@ -170,7 +170,7 @@ class MdiFilterArea(QtWidgets.QMdiArea):
             new_size = current_brush_size
             # print("Shift and Left mouse button pressed")
             if event.type() == QtCore.QEvent.MouseMove:
-                new_size = get_brush_size(event.pos())
+                new_size = get_brush_size()
 
             brush_icon.radius = new_size * 0.5
             set_brush_size(new_size)
