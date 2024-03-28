@@ -45,10 +45,11 @@ if EXIST %EXISTING_DESKTOP_FILE% (
     del %FINAL_EXTENSION_DIR% /F /Q
 )
 
-copy %EXTENSION_DESKTOP_FILE% %EXISTING_DESKTOP_FILE% /Y
+@REM copy %EXTENSION_DESKTOP_FILE% %EXISTING_DESKTOP_FILE% /Y
 
 
-for %%a in (%CURRENT_DIR%*.py) do copy %%a %FINAL_EXTENSION_DIR%  /Y
+@REM for %%a in (%CURRENT_DIR%*.py) do copy %%a %FINAL_EXTENSION_DIR%  /Y
+xcopy %CURRENT_DIR% %FINAL_EXTENSION_DIR% /Y /Q /E
 goto :finished
 
 :finished
