@@ -3,6 +3,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 import typing
 from PySide6.QtCore import Qt
 
+
 def buttonsToText(buttons: QtCore.Qt.MouseButtons):
     text = ""
     separator = "+"
@@ -21,6 +22,7 @@ def buttonsToText(buttons: QtCore.Qt.MouseButtons):
         text += "Middle"
     return text
 
+
 def keysToText(keys: list[QtCore.Qt.Key]):
     print("KEYS:")
     print(keys)
@@ -37,13 +39,13 @@ def keysToText(keys: list[QtCore.Qt.Key]):
             text += separator
         key_name = key_name_map.get(key)
         if not key_name:
-            key_name = QtGui.QKeySequence(key).toString(
-                QtGui.QKeySequence.NativeText)
+            key_name = QtGui.QKeySequence(key).toString(QtGui.QKeySequence.NativeText)
         text += key_name
     if len(text) == 0:
         text += "None"
     print(f"KEY TEXT: {text}")
     return text
+
 
 def buttonsInputToText(keys, buttons):
     button_text = buttonsToText(buttons)
@@ -51,6 +53,7 @@ def buttonsInputToText(keys, buttons):
         keys_text = keysToText(keys)
         return button_text + "+" + keys_text
     return button_text
+
 
 class KisInputButton(QtWidgets.QPushButton):
 
@@ -122,7 +125,9 @@ class KisInputButton(QtWidgets.QPushButton):
                 print(self.keys)
                 self._new_input = False
             key = event.key()
-            if key == QtCore.Qt.Key_Meta and event.modifiers().testFlag(QtCore.Qt.ShiftModifier):
+            if key == QtCore.Qt.Key_Meta and event.modifiers().testFlag(
+                QtCore.Qt.ShiftModifier
+            ):
                 key = QtCore.Qt.Key_Alt
             print(f"NEW KEY: {key}")
             self.keys.append(key)
@@ -155,9 +160,7 @@ class KritaInputWidget(QtWidgets.QWidget):
         self.layout().addWidget(self.button)
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     gui = KritaInputWidget()
     gui.show()

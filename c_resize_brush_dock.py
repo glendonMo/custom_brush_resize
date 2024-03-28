@@ -1,6 +1,9 @@
 from krita import Krita, DockWidget, DockWidgetFactory, DockWidgetFactoryBase
 from PyQt5 import QtWidgets
 
+from .ui import kis_input_button
+
+
 DOCK_OBJECT_NAME = "c_resize_brush_dock"
 
 
@@ -18,10 +21,12 @@ class CustomResizeBrushDock(DockWidget):
         max_brush_size = QtWidgets.QSpinBox()
         min_brush_size = QtWidgets.QSpinBox()
         max_size = QtWidgets.QSpinBox()
+        shortcut_button = kis_input_button.KisInputButton()
 
         layout.addRow(i18n("Maximum Brush Size:"), max_brush_size)
         layout.addRow(i18n("Minimum Brush Size:"), min_brush_size)
         layout.addRow(i18n("Resize Range Max:"), max_size)
+        layout.addRow(i18n("Shortcut:"), shortcut_button)
 
         self.widgets = {
             "max_brush_size": max_brush_size,
