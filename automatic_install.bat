@@ -2,8 +2,8 @@
 @REM extension to the roaming appdata pykrita folder
 echo off
 
-set /p "install_type=Choose install method (s: symlink | c: copy):"
-set install_type="%install_type%"
+@Rem set /p "install_type=Choose install method (s: symlink | c: copy):"
+set install_type="c"
 
 set "EXTENSION_NAME=custom_resize_brush"
 set "KRITA_APPDATA_DIR=%APPDATA%\krita"
