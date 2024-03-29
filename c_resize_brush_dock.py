@@ -1,10 +1,16 @@
 from krita import Krita, DockWidget, DockWidgetFactory, DockWidgetFactoryBase
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 
 from .ui import kis_input_button
+from .ui.config import buttons_input_to_text
 
 
 DOCK_OBJECT_NAME = "c_resize_brush_dock"
+DEFAULT_SHORTCUT = buttons_input_to_text(
+    [Qt.Key_Shift],
+    Qt.MouseButtons(Qt.RightButton),
+)
 
 
 class CustomResizeBrushDock(DockWidget):
@@ -32,6 +38,7 @@ class CustomResizeBrushDock(DockWidget):
             "max_brush_size": max_brush_size,
             "min_brush_size": min_brush_size,
             "max_size": max_size,
+            "shortcut": shortcut_button,
         }
 
         self.set_default_values()
@@ -49,11 +56,14 @@ class CustomResizeBrushDock(DockWidget):
         self.widgets["min_brush_size"].setSingleStep(1)
         self.widgets["min_brush_size"].setValue(0)
 
+        self.widgets["shortcut"].setText(DEFAULT_SHORTCUT)
+
     def as_dict(self):
         return {
             "max_size": self.widgets["max_size"].value(),
             "max_brush_size": self.widgets["max_brush_size"].value(),
             "min_brush_size": self.widgets["min_brush_size"].value(),
+            "shortcut": self.widgets["shortcut"].text(),
         }
 
     def canvasChanged(self, canvas):
