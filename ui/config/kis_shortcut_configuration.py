@@ -37,15 +37,18 @@ KEY_NAME_MAP = {
 }
 
 
+# Sign used between buttons in keys in displayed shortcuts
+SEPARATOR = "+"
+
+
 def buttons_to_text(buttons) -> str:
     """Map Qt.Mousebuttons to display names."""
     text = ""
-    separator = "+"
     button_count = 0
     for button in BUTTON_NAME_MAP:
         if buttons & button:
             if button_count > 0:
-                text += separator
+                text += SEPARATOR
             button_count += 1
             name = BUTTON_NAME_MAP[button]
             text += name
@@ -56,11 +59,10 @@ def buttons_to_text(buttons) -> str:
 def keys_to_text(keys: list[Qt.Key]) -> str:
     """Map a list of Qt.Key to display names."""
     text = ""
-    separator = "+"
 
     for key in keys:
         if len(text) > 0:
-            text += separator
+            text += SEPARATOR
         default_key = QtGui.QKeySequence(key).toString(QtGui.QKeySequence.NativeText)
         key_name = KEY_NAME_MAP.get(key, default_key)
         text += key_name
