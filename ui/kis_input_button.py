@@ -40,9 +40,6 @@ class KisInputButton(QtWidgets.QPushButton):
         the pressed keys and buttons.
         """
         if self.shortcut_type == ShortcutType.MouseButtonType:
-            if self.buttons is None:
-                self.setText(keys_to_text(self.keys))
-                return
             self.setText(buttons_input_to_text(self.keys, self.buttons))
         elif self.shortcut_type == ShortcutType.KeyCombinationType:
             self.setText(keys_to_text(self.keys))
@@ -64,7 +61,6 @@ class KisInputButton(QtWidgets.QPushButton):
     def mousePressEvent(self, event):
         """Change the label text if the user has already clicked the button."""
         if not self.isChecked():
-            self.buttons = None
             return
         self.buttons = event.buttons()
         self.update_label()
