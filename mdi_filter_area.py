@@ -1,7 +1,12 @@
 from krita import Krita, DockWidget
 from PyQt5 import QtWidgets, QtCore, QtGui
 from .c_resize_icon import CustomBrushIcon
-from .c_resize_brush_dock import DOCK_OBJECT_NAME
+from .c_resize_brush_dock import (
+    DOCK_OBJECT_NAME,
+    DEFAULT_SHORTCUT,
+    SINGAL_HANDLER,
+)
+from .ui.config import text_input_to_buttons
 from .utils import translate
 
 
@@ -18,6 +23,12 @@ min_brush_size = 0
 max_resize_value = 100
 min_resize_value = 0
 current_view = None
+shortcut = text_input_to_buttons(DEFAULT_SHORTCUT)
+
+
+# variables used for dynamically settings global variables
+key_name = "key_{qt_key}_pressed"
+button_name = "mouse_{qt_button}_pressed"
 
 
 brush_icon = CustomBrushIcon()
@@ -39,6 +50,7 @@ def start_resize():
     global max_brush_size
     global min_brush_size
     global current_view
+    global shortcut
 
     window = Krita.instance().activeWindow()
     current_view = window.activeView()
@@ -50,9 +62,55 @@ def start_resize():
     max_brush_size = settings.get("max_brush_size", max_brush_size)
     min_brush_size = settings.get("min_brush_size", min_brush_size)
 
+    set_shortcut_globals()
+
     cursor_press_position = QtGui.QCursor.pos()
     current_brush_size = current_view.brushSize()
     brush_icon.radius = current_brush_size
+
+
+def set_shortcut_globals():
+    global shortcut
+
+    if shortcut is None:
+        shortcut = text_input_to_buttons(DEFAULT_SHORTCUT)
+
+    buttons = shortcut[0]
+    keys = shortcut[1]
+
+    for button in buttons:
+        name = button_name.format(qt_button=button)
+        globals()[name] = globals().get(name, False)
+
+    for key in keys:
+        name = key_name.format(qt_key=key)
+        globals()[name] = globals().get(name, False)
+
+
+def set_global_shortcut():
+    global shortcut
+    print("Shortcut changed")
+    window = Krita.instance().activeWindow()
+    if window is None:
+        return
+    current_q_window = window.qwindow()
+
+    settings = get_dock_settings(current_q_window)
+    shortcut = text_input_to_buttons(
+        settings.get("shortcut", DEFAULT_SHORTCUT)
+    )
+    set_shortcut_globals()
+
+
+def is_shortcut_pressed():
+    global shortcut
+    buttons = shortcut[0]
+    keys = shortcut[1]
+    keys_pressed = [globals()[key_name.format(qt_key=key)] for key in keys]
+    buttons_pressed = [
+        globals()[button_name.format(qt_button=button)] for button in buttons
+    ]
+    return all(buttons_pressed + keys_pressed)
 
 
 def get_dock_settings(q_window=None):
@@ -119,54 +177,56 @@ class MdiFilterArea(QtWidgets.QMdiArea):
     def __init__(self, parent=None):
         super(MdiFilterArea, self).__init__(parent)
         self.image = QtGui.QPixmap()
+        set_shortcut_globals()
+        SINGAL_HANDLER.shortcut_changed.connect(set_global_shortcut)
 
     def eventFilter(self, object, event):
-        global shift_key_pressed
-        global l_mouse_button_pressed
+        global shortcut_pressed
+        global shortcut
 
-        global cursor_press_position
+        buttons = shortcut[0]
+        keys = shortcut[1]
 
         if not event.type() in ACCEPTED_EVENT_TYPES:
             return False
 
-        # Is user pressing the shift key?
+        # Is user pressing a shorcut key?
         if (
-            not shift_key_pressed
-            and event.type() == QtCore.QEvent.KeyPress
-            and event.key() == QtCore.Qt.Key_Shift
+            event.type() == QtCore.QEvent.KeyPress
+            and event.key() in keys
+            and not globals()[key_name.format(qt_key=event.key())]
         ):
-            shift_key_pressed = True
+            globals()[key_name.format(qt_key=event.key())] = True
 
-        # The user released the shift key
+        # The user released a shortcut key
         if (
             event.type() == QtCore.QEvent.KeyRelease
-            and event.key() == QtCore.Qt.Key_Shift
+            and event.key() in keys
+            and globals()[key_name.format(qt_key=event.key())]
         ):
-            shift_key_pressed = False
+            globals()[key_name.format(qt_key=event.key())] = False
             return False
 
-        # Is the user pressing the left mouse button
-        # while pressing the shift key?
+        # Is the user pressing a shortcut mouse button
         if (
-            not l_mouse_button_pressed
-            and shift_key_pressed
-            and event.type() == QtCore.QEvent.MouseButtonPress
-            and event.button() == QtCore.Qt.LeftButton
+            event.type() == QtCore.QEvent.MouseButtonPress
+            and event.button() in buttons
+            and not globals()[button_name.format(qt_button=event.button())]
         ):
-            l_mouse_button_pressed = True
+            globals()[button_name.format(qt_button=event.button())] = True
             start_resize()
 
-        # The user released the left mouse button
+        # The user released a shortcut mouse button
         if (
             event.type() == QtCore.QEvent.MouseButtonRelease
-            and event.button() == QtCore.Qt.LeftButton
+            and event.button() in buttons
         ):
             brush_icon.hide()
-            l_mouse_button_pressed = False
+            globals()[button_name.format(qt_button=event.button())] = False
             return False
 
-        # Is user pressing shift key and left mouse button
-        if all([shift_key_pressed, l_mouse_button_pressed]):
+        # Is user pressing all shortcut keys and buttons?
+        if is_shortcut_pressed():
             new_size = current_brush_size
             # print("Shift and Left mouse button pressed")
             if event.type() == QtCore.QEvent.MouseMove:

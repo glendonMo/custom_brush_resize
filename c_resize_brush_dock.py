@@ -1,6 +1,6 @@
 from krita import Krita, DockWidget, DockWidgetFactory, DockWidgetFactoryBase
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt, pyqtSignal
 
 from .ui import kis_input_button
 from .ui.config import buttons_input_to_text
@@ -11,6 +11,13 @@ DEFAULT_SHORTCUT = buttons_input_to_text(
     [Qt.Key_Shift],
     Qt.MouseButtons(Qt.RightButton),
 )
+
+
+class DockSignalHandler(QtCore.QObject):
+    shortcut_changed = pyqtSignal()
+
+
+SINGAL_HANDLER = DockSignalHandler()
 
 
 class CustomResizeBrushDock(DockWidget):
@@ -34,6 +41,7 @@ class CustomResizeBrushDock(DockWidget):
         layout.addRow(i18n("Resize Range Max:"), max_size)
         layout.addRow(i18n("Shortcut:"), shortcut_button)
 
+        self.handler = SINGAL_HANDLER
         self.widgets = {
             "max_brush_size": max_brush_size,
             "min_brush_size": min_brush_size,
@@ -57,6 +65,9 @@ class CustomResizeBrushDock(DockWidget):
         self.widgets["min_brush_size"].setValue(0)
 
         self.widgets["shortcut"].setText(DEFAULT_SHORTCUT)
+        self.widgets["shortcut"].dataChanged.connect(
+            self.handler.shortcut_changed.emit
+        )
 
     def as_dict(self):
         return {
