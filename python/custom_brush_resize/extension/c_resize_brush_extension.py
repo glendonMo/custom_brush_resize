@@ -1,5 +1,5 @@
 from krita import Krita, Extension
-from .mdi_filter_area import MdiFilterArea
+from ..mdi_filter_area import MdiFilterArea
 
 
 class CustomBrushResizeExtension(Extension):
@@ -16,6 +16,3 @@ class CustomBrushResizeExtension(Extension):
         )
 
         self.main_event_loop = MdiFilterArea()
-
-
-Krita.instance().addExtension(CustomBrushResizeExtension(Krita.instance()))

@@ -5,7 +5,7 @@
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt
-from .config import (
+from ..config import (
     keys_to_text,
     buttons_input_to_text,
     ShortcutType,

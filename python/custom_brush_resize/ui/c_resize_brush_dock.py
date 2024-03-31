@@ -2,8 +2,8 @@ from krita import Krita, DockWidget, DockWidgetFactory, DockWidgetFactoryBase
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt, pyqtSignal
 
-from .ui import kis_input_button
-from .ui.config import buttons_input_to_text
+from .widgets import kis_input_button
+from .config import buttons_input_to_text
 
 
 DOCK_OBJECT_NAME = "c_resize_brush_dock"
@@ -79,12 +79,3 @@ class CustomResizeBrushDock(DockWidget):
 
     def canvasChanged(self, canvas):
         pass
-
-
-Krita.instance().addDockWidgetFactory(
-    DockWidgetFactory(
-        DOCK_OBJECT_NAME,
-        DockWidgetFactoryBase.DockRight,
-        CustomResizeBrushDock,
-    )
-)
