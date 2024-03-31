@@ -14,7 +14,7 @@ DEFAULT_SHORTCUT = buttons_input_to_text(
 
 
 class DockSignalHandler(QtCore.QObject):
-    shortcut_changed = pyqtSignal()
+    shortcut_changed = pyqtSignal(str)
 
 
 SINGAL_HANDLER = DockSignalHandler()
@@ -66,7 +66,7 @@ class CustomResizeBrushDock(DockWidget):
 
         self.widgets["shortcut"].setText(DEFAULT_SHORTCUT)
         self.widgets["shortcut"].dataChanged.connect(
-            self.handler.shortcut_changed.emit
+            self.emit_shortcut_changed
         )
 
     def as_dict(self):
@@ -76,6 +76,9 @@ class CustomResizeBrushDock(DockWidget):
             "min_brush_size": self.widgets["min_brush_size"].value(),
             "shortcut": self.widgets["shortcut"].text(),
         }
+
+    def emit_shortcut_changed(self):
+        self.handler.shortcut_changed.emit(self.widgets["shortcut"].text())
 
     def canvasChanged(self, canvas):
         pass
