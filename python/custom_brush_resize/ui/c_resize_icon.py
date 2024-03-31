@@ -7,6 +7,7 @@ MAGENTA = QtCore.Qt.GlobalColor.magenta
 SOLID_LINE = QtCore.Qt.PenStyle.SolidLine
 DOT_LINE = QtCore.Qt.PenStyle.DotLine
 HIGH_QUAL_ANTI_ALIAS = QtGui.QPainter.HighQualityAntialiasing
+TRANSLUCENT_WINDOW = QtCore.Qt.WA_TranslucentBackground
 
 
 class CustomBrushIcon(QtWidgets.QWidget):
@@ -19,7 +20,7 @@ class CustomBrushIcon(QtWidgets.QWidget):
             | QtCore.Qt.FramelessWindowHint
         )
         self._radius = 50
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.setAttribute(TRANSLUCENT_WINDOW)
         self.setStyleSheet("background: transparent;")
         self.setWindowTitle("icon")
 
