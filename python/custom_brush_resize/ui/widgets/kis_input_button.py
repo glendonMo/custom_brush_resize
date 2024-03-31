@@ -40,6 +40,9 @@ class KisInputButton(QtWidgets.QPushButton):
         the pressed keys and buttons.
         """
         if self.shortcut_type == ShortcutType.MouseButtonType:
+            if self.buttons in None:
+                self.setText(self.setText(keys_to_text(self.keys)))
+                return
             self.setText(buttons_input_to_text(self.keys, self.buttons))
         elif self.shortcut_type == ShortcutType.KeyCombinationType:
             self.setText(keys_to_text(self.keys))
