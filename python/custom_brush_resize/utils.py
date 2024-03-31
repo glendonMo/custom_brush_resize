@@ -1,3 +1,7 @@
+import os
+import json
+
+
 def remap(value, start_range, end_range):
     """Convert given value from one range to another.
 
@@ -44,3 +48,27 @@ def clamp(min_value, value, max_value):
 def lerp(pt1, pt2, t):
     """Lerp function from KisAlgebra2D."""
     return pt1 + (pt2 - pt1) * t
+
+
+def write_to_json(file_path, data):
+    """Save the given data to the given json file."""
+    # skip if file is not a json file
+    if not os.path.splitext(os.path.basename(file_path))[-1] == "json":
+        return
+
+    with open(file_path, "w") as _file:
+        json.dump(data, _file, indent=4)
+
+
+def read_from_json(file_path):
+    """Read data from given json file."""
+    data = {}
+    with open(file_path) as _file:
+        data = json.loads(_file.read())
+    return data
+
+
+def get_settings_file(package_name):
+    """Get a json file that is in the Appdata folder."""
+    path = f"%APPDATA%/{package_name}/settings/{package_name}.json"
+    return os.path.normpath(os.path.expandvars(path))

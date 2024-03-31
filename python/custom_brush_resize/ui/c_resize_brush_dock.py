@@ -1,12 +1,18 @@
-from krita import Krita, DockWidget, DockWidgetFactory, DockWidgetFactoryBase
+import os
+
+from krita import DockWidget
+
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt, pyqtSignal
 
 from .widgets import kis_input_button
 from .config import buttons_input_to_text
+from ..utils import write_to_json, get_settings_file, read_from_json
 
 
 DOCK_OBJECT_NAME = "c_resize_brush_dock"
+SETTINGS_FILE = get_settings_file(DOCK_OBJECT_NAME)
+
 DEFAULT_SHORTCUT = buttons_input_to_text(
     [Qt.Key_Shift],
     Qt.MouseButtons(Qt.RightButton),
@@ -15,6 +21,7 @@ DEFAULT_SHORTCUT = buttons_input_to_text(
 
 class DockSignalHandler(QtCore.QObject):
     shortcut_changed = pyqtSignal(str)
+    settings_changed = pyqtSignal()
 
 
 SINGAL_HANDLER = DockSignalHandler()
@@ -65,8 +72,25 @@ class CustomResizeBrushDock(DockWidget):
         self.widgets["min_brush_size"].setValue(0)
 
         self.widgets["shortcut"].setText(DEFAULT_SHORTCUT)
+        self.import_settings()
+
         self.widgets["shortcut"].dataChanged.connect(
             self.emit_shortcut_changed
+        )
+
+        # handling tool settings
+        self.handler.settings_changed.connect(self.export_settings)
+        self.widgets["max_size"].valueChanged.connect(
+            self.handler.settings_changed.emit
+        )
+        self.widgets["max_brush_size"].valueChanged.connect(
+            self.handler.settings_changed.emit
+        )
+        self.widgets["min_brush_size"].valueChanged.connect(
+            self.handler.settings_changed.emit
+        )
+        self.widgets["shortcut"].dataChanged.connect(
+            self.handler.settings_changed.emit
         )
 
     def as_dict(self):
@@ -82,3 +106,15 @@ class CustomResizeBrushDock(DockWidget):
 
     def canvasChanged(self, canvas):
         pass
+
+    def export_settings(self):
+        write_to_json(SETTINGS_FILE, self.as_dict())
+
+    def import_settings(self):
+        if not os.path.exists(SETTINGS_FILE):
+            return
+        settings = read_from_json(SETTINGS_FILE)
+        self.widgets["max_size"].setValue(settings.get("max_value"))
+        self.widgets["max_brush_size"].setValue(settings.get("max_brush_size"))
+        self.widgets["min_brush_size"].setValue(settings.get("min_brush_size"))
+        self.widgets["shortcut"].setText(settings.get("shortcut"))
