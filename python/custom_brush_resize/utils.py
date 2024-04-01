@@ -53,10 +53,13 @@ def lerp(pt1, pt2, t):
 def write_to_json(file_path, data):
     """Save the given data to the given json file."""
     # skip if file is not a json file
-    if not os.path.splitext(os.path.basename(file_path))[-1] == "json":
+    if not os.path.splitext(os.path.basename(file_path))[-1] == ".json":
         return
 
-    with open(file_path, "w") as _file:
+    if not os.path.isdir(os.path.dirname(file_path)):
+        os.makedirs(os.path.dirname(file_path))
+
+    with open(file_path, "w+") as _file:
         json.dump(data, _file, indent=4)
 
 
