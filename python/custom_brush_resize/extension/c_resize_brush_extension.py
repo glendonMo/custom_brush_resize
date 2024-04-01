@@ -2,8 +2,13 @@ from krita import Extension
 
 from ..drivers.shortcut_listener import ShortcutListener
 from ..drivers.brush_size_driver import BrushSizeDriver
-from ..ui.c_resize_brush_dock import SINGAL_HANDLER, DEFAULT_SHORTCUT
+from ..ui.c_resize_brush_dock import (
+    SINGAL_HANDLER,
+    DEFAULT_SHORTCUT,
+    SETTINGS_FILE,
+)
 from ..ui.c_resize_icon import CustomBrushIcon
+from ..utils import read_from_json
 
 
 class CustomBrushResizeExtension(Extension):
@@ -23,7 +28,10 @@ class CustomBrushResizeExtension(Extension):
         )
 
         # Initialize drivers
-        self.shortcut_listener = ShortcutListener(DEFAULT_SHORTCUT)
+        data = read_from_json(SETTINGS_FILE)
+        shortcut = data.get("shortcut", DEFAULT_SHORTCUT)
+
+        self.shortcut_listener = ShortcutListener(shortcut)
         self.brush_driver = BrushSizeDriver()
         self.brush_icon = CustomBrushIcon()
         self.brush_icon.hide()
@@ -58,12 +66,13 @@ class CustomBrushResizeExtension(Extension):
         self.brush_driver.start_resize()
 
     def resize_brush(self, *_):
+        if not self.brush_driver.can_resize_brush:
+            return
         self.brush_icon.radius = (
             self.brush_driver.brush_size_after_change * 0.5
         )
         self.brush_icon.show_at(self.brush_driver.initial_press_position)
         self.brush_driver.resize_brush()
-        self.brush_driver.resizing_brush = True
 
     def end_resize(self, *_):
         self.brush_driver.end_resize()
