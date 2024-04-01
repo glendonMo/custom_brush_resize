@@ -5,7 +5,7 @@ from krita import DockWidget
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt, pyqtSignal
 
-from .widgets import kis_input_button
+from .widgets import kis_input_button, kis_slider_spinbox
 from .config import buttons_input_to_text
 from ..utils import write_to_json, get_settings_file, read_from_json
 
@@ -38,9 +38,9 @@ class CustomResizeBrushDock(DockWidget):
 
         self.setWidget(widget)
 
-        max_brush_size = QtWidgets.QSpinBox()
-        min_brush_size = QtWidgets.QSpinBox()
-        max_size = QtWidgets.QSpinBox()
+        max_brush_size = kis_slider_spinbox.KisSliderSpinBox()
+        min_brush_size = kis_slider_spinbox.KisSliderSpinBox()
+        max_size = kis_slider_spinbox.KisSliderSpinBox()
         shortcut_button = kis_input_button.KisInputButton()
 
         layout.addRow(i18n("Maximum Brush Size:"), max_brush_size)
@@ -59,15 +59,15 @@ class CustomResizeBrushDock(DockWidget):
         self.set_default_values()
 
     def set_default_values(self):
-        self.widgets["max_size"].setRange(10, 10000)
+        self.widgets["max_size"].set_range(10, 1000, 0)
         self.widgets["max_size"].setSingleStep(1)
         self.widgets["max_size"].setValue(100)
 
-        self.widgets["max_brush_size"].setRange(1, 10000)
+        self.widgets["max_brush_size"].set_range(10, 10000, 0)
         self.widgets["max_brush_size"].setSingleStep(1)
         self.widgets["max_brush_size"].setValue(1000)
 
-        self.widgets["min_brush_size"].setRange(0, 10000)
+        self.widgets["min_brush_size"].set_range(0, 1000, 0)
         self.widgets["min_brush_size"].setSingleStep(1)
         self.widgets["min_brush_size"].setValue(0)
 
@@ -114,7 +114,19 @@ class CustomResizeBrushDock(DockWidget):
         if not os.path.exists(SETTINGS_FILE):
             return
         settings = read_from_json(SETTINGS_FILE)
-        self.widgets["max_size"].setValue(settings.get("max_value"))
-        self.widgets["max_brush_size"].setValue(settings.get("max_brush_size"))
-        self.widgets["min_brush_size"].setValue(settings.get("min_brush_size"))
-        self.widgets["shortcut"].setText(settings.get("shortcut"))
+        self.widgets["max_size"].setValue(
+            settings.get("max_size", self.widgets["max_size"].value())
+        )
+        self.widgets["max_brush_size"].setValue(
+            settings.get(
+                "max_brush_size", self.widgets["max_brush_size"].value()
+            )
+        )
+        self.widgets["min_brush_size"].setValue(
+            settings.get(
+                "min_brush_size", self.widgets["min_brush_size"].value()
+            )
+        )
+        self.widgets["shortcut"].setText(
+            settings.get("shortcut", self.widgets["shortcut"].text())
+        )
