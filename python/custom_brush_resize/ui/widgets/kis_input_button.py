@@ -8,8 +8,13 @@ from PyQt5.QtCore import Qt
 from ..config import (
     keys_to_text,
     buttons_input_to_text,
+    text_input_to_buttons,
     ShortcutType,
 )
+
+
+INPUT_TEXT = "Awaiting Input..."
+ERROR_TEXT = "Could not set input..."
 
 
 class KisInputButton(QtWidgets.QPushButton):
@@ -40,9 +45,6 @@ class KisInputButton(QtWidgets.QPushButton):
         the pressed keys and buttons.
         """
         if self.shortcut_type == ShortcutType.MouseButtonType:
-            if self.buttons is None:
-                self.setText(self.setText(keys_to_text(self.keys)))
-                return
             self.setText(buttons_input_to_text(self.keys, self.buttons))
         elif self.shortcut_type == ShortcutType.KeyCombinationType:
             self.setText(keys_to_text(self.keys))
@@ -73,7 +75,7 @@ class KisInputButton(QtWidgets.QPushButton):
         """Accept user input after the user clicks the button."""
         if not self.isChecked():
             self.setChecked(True)
-            self.setText("Awaiting Input...")
+            self.setText(INPUT_TEXT)
             self.reset_timer.start()
             self.accept_new_input = True
             return
@@ -98,11 +100,27 @@ class KisInputButton(QtWidgets.QPushButton):
         if not self.isChecked():
             if event.key() in [Qt.Key_Enter, Qt.Key_Return]:
                 self.setChecked(True)
-                self.setText("Key Input...")
+                self.setText(INPUT_TEXT)
                 self.accept_new_input = True
                 self.reset_timer.start()
                 return
         self.reset()
+
+    def setText(self, text):
+        """Overriding setText to also set keys and buttons."""
+        # do not initalize keys and buttons with prompting text
+        if text == INPUT_TEXT:
+            super(KisInputButton, self).setText(INPUT_TEXT)
+            return
+
+        # skip invalid text
+        if text == ERROR_TEXT or not text:
+            super(KisInputButton, self).setText(ERROR_TEXT)
+            return
+
+        # initialize input buttons and keys
+        self.buttons, self.keys = text_input_to_buttons(text)
+        super(KisInputButton, self).setText(text)
 
 
 # Testing
