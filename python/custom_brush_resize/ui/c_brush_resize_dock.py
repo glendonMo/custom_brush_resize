@@ -27,9 +27,9 @@ class DockSignalHandler(QtCore.QObject):
 SINGAL_HANDLER = DockSignalHandler()
 
 
-class CustomResizeBrushDock(DockWidget):
+class CustomBrushResizeDock(DockWidget):
     def __init__(self):
-        super(CustomResizeBrushDock, self).__init__()
+        super(CustomBrushResizeDock, self).__init__()
         self.setWindowTitle("Custom Brush Resize Settings")
 
         widget = QtWidgets.QWidget()

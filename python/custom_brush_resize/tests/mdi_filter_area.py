@@ -1,7 +1,7 @@
 from krita import Krita, DockWidget
 from PyQt5 import QtWidgets, QtCore, QtGui
-from ..ui.c_resize_icon import CustomBrushIcon
-from ..ui.c_resize_brush_dock import (
+from ..ui.c_brush_icon import CustomBrushIcon
+from ..ui.c_brush_resize_dock import (
     DOCK_OBJECT_NAME,
     DEFAULT_SHORTCUT,
     SINGAL_HANDLER,

@@ -2,12 +2,12 @@ from krita import Extension
 
 from ..drivers.shortcut_listener import ShortcutListener
 from ..drivers.brush_size_driver import BrushSizeDriver
-from ..ui.c_resize_brush_dock import (
+from ..ui.c_brush_resize_dock import (
     SINGAL_HANDLER,
     DEFAULT_SHORTCUT,
     SETTINGS_FILE,
 )
-from ..ui.c_resize_icon import CustomBrushIcon
+from ..ui.c_brush_icon import CustomBrushIcon
 from ..utils import read_from_json
 
 

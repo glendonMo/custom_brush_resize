@@ -3,7 +3,7 @@ from krita import Krita, DockWidget
 from PyQt5 import QtGui, QtCore, QtWidgets
 
 from ..utils import remap, clamp
-from ..ui.c_resize_brush_dock import DOCK_OBJECT_NAME
+from ..ui.c_brush_resize_dock import DOCK_OBJECT_NAME
 
 # For finding ui elements within krita
 KRITA_TOOL_BOX_NAME = "ToolBox"

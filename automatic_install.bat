@@ -1,11 +1,11 @@
-@REM Used to automatically copy the custom_resize_brush
-@REM extension to the roaming appdata pykrita folder
+REM Used to automatically copy the custom_resize_brush on Windows
+REM extension to the roaming appdata pykrita folder
 echo off
 
-@Rem set /p "install_type=Choose install method (s: symlink | c: copy):"
+Rem set /p "install_type=Choose install method (s: symlink | c: copy):"
 set install_type="c"
 
-set "EXTENSION_NAME=custom_resize_brush"
+set "EXTENSION_NAME=custom_brush_resize"
 set "KRITA_APPDATA_DIR=%APPDATA%\krita"
 set "KRITA_PYKRITA_DIR=%KRITA_APPDATA_DIR%\pykrita"
 set "CURRENT_DIR=%~dp0"
@@ -48,7 +48,7 @@ if EXIST %EXISTING_DESKTOP_FILE% (
 copy "%EXTENSION_DESKTOP_FILE%" "%EXISTING_DESKTOP_FILE%" /Y 
 
 
-@REM for %%a in (%CURRENT_DIR%*.py) do copy %%a %FINAL_EXTENSION_DIR%  /Y
+REM for %%a in (%CURRENT_DIR%*.py) do copy %%a %FINAL_EXTENSION_DIR%  /Y
 xcopy %CURRENT_DIR% %FINAL_EXTENSION_DIR% /Y /Q /E 
 goto :finished
 
