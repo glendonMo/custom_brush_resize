@@ -31,7 +31,7 @@ class CustomBrushIcon(QtWidgets.QWidget):
         self._radius = 50
         self.can_paint_icon = True
 
-    def paintEvent(self, event):
+    def paintEvent(self, _):
         """Draw the icon."""
         if not self.can_paint_icon:
             return

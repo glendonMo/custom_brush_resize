@@ -33,6 +33,7 @@ def remap(value, start_range, end_range):
 def clamp(min_value, value, max_value):
     """Limit given value between a min and max value.
     Alternate to using QBound.
+
     :param min_value: the lowest value the given value can be
     :type min_value: int or float
     :param value: the value to keep between min_value and max_value

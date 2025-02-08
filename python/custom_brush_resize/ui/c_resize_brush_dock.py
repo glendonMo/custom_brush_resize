@@ -56,9 +56,9 @@ class CustomResizeBrushDock(DockWidget):
             "shortcut": shortcut_button,
         }
 
-        self.set_default_values()
+        self._set_internal_settings()
 
-    def set_default_values(self):
+    def _set_internal_settings(self):
         self.widgets["max_size"].set_range(10, 1000, 0)
         self.widgets["max_size"].setSingleStep(1)
         self.widgets["max_size"].setValue(100)
@@ -104,7 +104,7 @@ class CustomResizeBrushDock(DockWidget):
     def emit_shortcut_changed(self):
         self.handler.shortcut_changed.emit(self.widgets["shortcut"].text())
 
-    def canvasChanged(self, canvas):
+    def canvasChanged(self, _):
         pass
 
     def export_settings(self):

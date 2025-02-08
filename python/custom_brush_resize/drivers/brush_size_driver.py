@@ -132,15 +132,21 @@ class BrushSizeDriver(QtCore.QObject):
 
     def is_brush_tool_toggled(self):
         """Confirm whether the brush tool is the current tool."""
+        brush_tool = None
+
         for dock in Krita.instance().dockers():
-            if dock.objectName() == KRITA_TOOL_BOX_NAME:
-                brush_tool = dock.findChild(
-                    QtWidgets.QToolButton,
-                    KRITA_BRUSH_TOOL_NAME,
-                    QtCore.Qt.FindChildrenRecursively,
-                )
-                if not brush_tool:
-                    return False
+            if not dock.objectName() == KRITA_TOOL_BOX_NAME:
+                continue
+
+            brush_tool = dock.findChild(
+                QtWidgets.QToolButton,
+                KRITA_BRUSH_TOOL_NAME,
+                QtCore.Qt.FindChildrenRecursively,
+            )
+
+        if not brush_tool:
+            return False
+
         return brush_tool.isChecked()
 
     def does_document_exist(self):

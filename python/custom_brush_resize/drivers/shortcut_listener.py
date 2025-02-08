@@ -52,7 +52,7 @@ class ShortcutListener(QtWidgets.QMdiArea):
         for key in keys:
             self.shortcut_keys_pressed[key] = False
 
-    def eventFilter(self, obj, event):
+    def eventFilter(self, _, event):
         """Overriding evenFilter to catch accepted event types.
         The mouse button and key presses are monitored here.
         When the user presses/releases a key or mouse button that

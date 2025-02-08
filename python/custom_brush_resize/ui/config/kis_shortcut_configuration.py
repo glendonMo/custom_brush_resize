@@ -46,14 +46,16 @@ def buttons_to_text(buttons) -> str:
     text = ""
     button_count = 0
     for button in BUTTON_NAME_MAP:
-        if is_button_in(buttons, button):
-            if button_count > 0:
-                text += SEPARATOR
-            button_count += 1
-            name = BUTTON_NAME_MAP[button]
-            text += name
+        if not is_button_in(buttons, button):
+            continue
+        if button_count > 0:
+            text += SEPARATOR
+        button_count += 1
+        name = BUTTON_NAME_MAP[button]
+        text += name
 
     return text
+
 
 def is_button_in(buttons, button):
     """Check if given buttons contains button."""
@@ -67,7 +69,6 @@ def is_button_in(buttons, button):
 def keys_to_text(keys: list[Qt.Key]) -> str:
     """Map a list of Qt.Key to display names."""
     text = ""
-
     for key in keys:
         if len(text) > 0:
             text += SEPARATOR
@@ -99,8 +100,9 @@ def text_to_buttons(text, separator=SEPARATOR) -> list[Qt.MouseButton]:
     buttons = []
     for button in text.split(separator):
         for qt_button in BUTTON_NAME_MAP:
-            if button == BUTTON_NAME_MAP[qt_button]:
-                buttons.append(qt_button)
+            if not button == BUTTON_NAME_MAP[qt_button]:
+                continue
+            buttons.append(qt_button)
     return buttons
 
 
