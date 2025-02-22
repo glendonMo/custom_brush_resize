@@ -67,8 +67,9 @@ def write_to_json(file_path, data):
 def read_from_json(file_path):
     """Read data from given json file."""
     data = {}
-    with open(file_path) as _file:
-        data = json.loads(_file.read())
+    if os.path.exists(file_path):
+        with open(file_path) as _file:
+            data = json.loads(_file.read())
     return data
 
 
